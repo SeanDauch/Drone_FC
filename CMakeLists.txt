@@ -31,6 +31,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/files.cmake)
 # Add sources to executable/library
 target_sources(${PROJECT_NAME} PRIVATE
   # User defined sources
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/CRSF/uart.c
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/DShot/pwm.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/DShot/DShot.c
 )
 
 # Add include directories
@@ -39,6 +44,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
   ${CMAKE_CURRENT_SOURCE_DIR}/../CMSIS/Include
   ${CMAKE_CURRENT_SOURCE_DIR}/../CMSIS/Device/STM32F4/Include
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/Inc
 )
 
 # Compiler options

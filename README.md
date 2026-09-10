@@ -8,9 +8,13 @@ Making a custom flight controller for a 5-inch drone
     ESC: SpeedyBee BLS 60A
 
 ### To-Do:
-1. UART drivers
+1. DSHOT drivers
+    - Data packing func
+    - Delivering data to DMA func
+2. UART drivers
     - CRSF decoder
-2. DSHOT drivers
+3. PID
 
-### Things I learned:
-1. 
+### Things I Learned:
+1. DShot
+    - Combining DMA and PWM wasnt something I knew was possible

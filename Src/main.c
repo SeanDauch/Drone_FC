@@ -3,6 +3,8 @@
 
 int main(){
     
+    uart1_init(,);
+    
 	while(1){
         
     }
