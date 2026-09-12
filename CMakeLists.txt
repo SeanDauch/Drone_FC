@@ -32,10 +32,14 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/files.cmake)
 target_sources(${PROJECT_NAME} PRIVATE
   # User defined sources
 
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/delay.c
+
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/CRSF/uart.c
 
-  ${CMAKE_CURRENT_SOURCE_DIR}/Src/DShot/pwm.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/Src/DShot/DShot.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/ESC/pwm.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/ESC/DShot.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/ESC/ESC.c
+  
 )
 
 # Add include directories
