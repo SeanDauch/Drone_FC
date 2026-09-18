@@ -20,7 +20,7 @@
 #define TIM1_CH4_channel 6
 
 // configuring the DMA2_stream for Dshot
-void _DMA2_init(uint8_t stream, uint8_t channel, volatile uint32_t* peripheral_addr){
+void _DMA2_init_for_DShot(uint8_t stream, uint8_t channel, volatile uint32_t* peripheral_addr){
 
     RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 
@@ -90,10 +90,10 @@ void DShot_init(uint64_t bitrate, uint64_t System_Frequency){
     // enable TIM1 DMA requests
     TIM1->DIER |= TIM_DIER_CC1DE | TIM_DIER_CC2DE | TIM_DIER_CC3DE | TIM_DIER_CC4DE;
 
-    _DMA2_init(TIM1_CH1_stream, TIM1_CH1_channel, &TIM1->CCR1);
-    _DMA2_init(TIM1_CH2_stream, TIM1_CH2_channel, &TIM1->CCR2);
-    _DMA2_init(TIM1_CH3_stream, TIM1_CH3_channel, &TIM1->CCR3);
-    _DMA2_init(TIM1_CH4_stream, TIM1_CH4_channel, &TIM1->CCR4);
+    _DMA2_init_for_DShot(TIM1_CH1_stream, TIM1_CH1_channel, &TIM1->CCR1);
+    _DMA2_init_for_DShot(TIM1_CH2_stream, TIM1_CH2_channel, &TIM1->CCR2);
+    _DMA2_init_for_DShot(TIM1_CH3_stream, TIM1_CH3_channel, &TIM1->CCR3);
+    _DMA2_init_for_DShot(TIM1_CH4_stream, TIM1_CH4_channel, &TIM1->CCR4);
 }
 
 // packs 11-bit throttle data into DMA ready array

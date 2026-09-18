@@ -15,6 +15,7 @@ Making a custom flight controller for a 5-inch drone
     - ~~Data packing func~~
     - ~~Delivering data to DMA func~~
 2. UART drivers
+    - ~~Add DMA to UART~~
     - CRSF decoder
 3. PID
 
@@ -22,3 +23,6 @@ Making a custom flight controller for a 5-inch drone
 1. DShot
     - Combining DMA and PWM wasnt something I knew was possible
     - I learned a lot more about how different DMA options are used
+2. UART
+    - Ive never used uart before so I learned how to set up drivers
+    - I used the uart drivers to send data to my pc using the serial monitor

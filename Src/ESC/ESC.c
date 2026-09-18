@@ -5,9 +5,15 @@
 #include "delay.h"
 
 #define min_throttle 48
+#define idle_throttle 30
 #define max_throttle 2047
 
+// Globals
+uint64_t Sys_Freq = 16000000;
+
 void ESC_init(uint64_t bitrate, uint64_t System_Frequency){
+
+    Sys_Freq = System_Frequency;
 
     // wait for ESC power up
     delay_SysTick(2000, System_Frequency);
@@ -36,8 +42,8 @@ void set_throttle(uint8_t motor_number, uint16_t throttle){
 
     throttle += min_throttle;
 
-    if(throttle < min_throttle){
-        throttle = min_throttle;
+    if(throttle < idle_throttle){
+        throttle = idle_throttle;
     }else if(throttle > max_throttle){
         throttle = max_throttle;
     }
@@ -49,4 +55,34 @@ void set_throttle(uint8_t motor_number, uint16_t throttle){
         case 4: Dshot_write_CH4(throttle); break;
         default:break;
     }
+}
+
+void disarm_motors(){
+
+    for(int i = 1000; i>0; i--){
+        set_throttle(1, i);
+        set_throttle(2, i);
+        set_throttle(3, i);
+        set_throttle(4, i);
+        delay_SysTick(1, Sys_Freq);
+    }
+
+    Dshot_write_CH1(0);
+    Dshot_write_CH2(0);
+    Dshot_write_CH3(0);
+    Dshot_write_CH4(0);
+}
+
+void motor_test(){
+
+    for(int i = 0; i<1000; i++){
+        set_throttle(1, i);
+        set_throttle(2, i);
+        set_throttle(3, i);
+        set_throttle(4, i);
+        delay_SysTick(5, Sys_Freq);
+    }
+    
+    disarm_motors();
+    while(1){}
 }
