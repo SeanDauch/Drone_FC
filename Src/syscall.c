@@ -30,6 +30,8 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
+#include "debugging.h"
+
 
 /* Variables */
 extern int __io_putchar(int ch) __attribute__((weak));

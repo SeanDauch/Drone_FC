@@ -1,6 +1,5 @@
 #include "stm32f411xe.h"
 #include "stm32f4xx.h"
-#include "system_stm32f4xx.h"
 #include <stdint.h>
 
 // port b
@@ -82,6 +81,13 @@ void uart1_recieve(uint8_t data_storage[], uint64_t data_amount){
 
         data_storage[i] = USART1 -> DR;
     }
+}
+
+void _clear_USART1_SR(){
+
+    uint32_t temp_read;
+    temp_read = USART1 -> SR;
+    temp_read = USART1 -> DR;
 }
 
 // ----------------------------------- DMA -------------------------------------
@@ -166,14 +172,27 @@ void uart1_DMA_init(uint32_t baud_rate, uint32_t APB2_clk){
     
 }
 
+uint64_t heartbeat = 0;
+// pin b6
 void uart1_DMA_TX(uint8_t transmition_data[], uint16_t transmition_length){
 
+    // stream disables on TC
+    while(DMA2_Stream7 -> CR & DMA_SxCR_EN){}
+
+    heartbeat++;
+
+    _clear_USART1_SR();
     USART1 -> CR1 |= USART_CR1_TE;
     _DMA2_enable(USART_TX_stream, transmition_data, transmition_length);
 }
 
+// pin b7
 void uart1_DMA_RX(uint8_t reception_buffer[], uint16_t buffer_length){
 
+    // stream disables on TC
+    while(DMA2_Stream5 -> CR & DMA_SxCR_EN){}
+
+    _clear_USART1_SR();
     USART1 -> CR1 |= USART_CR1_RE;
     _DMA2_enable(USART_RX_stream, reception_buffer, buffer_length);
 }
@@ -197,3 +216,4 @@ void uart1_DMA_test(uint64_t CLK_freq){
         }
     }
 }
+
