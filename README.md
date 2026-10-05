@@ -20,7 +20,9 @@ Making a custom flight controller for a 5-inch drone
     - ~~CRSF decoder~~
     - ~~Implement double buffer mode for reciever~~
     - ~~add CRC~~
-3. PID
+3. Verify evething works together - FreeRTOS?
+4. PCB design
+5. PID
 
 ### Things I Learned:
 1. DShot
