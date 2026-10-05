@@ -38,6 +38,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/receiver/uart.c
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/receiver/CRSF.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/receiver/RC_receiver.c
 
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/ESC/pwm.c
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/ESC/DShot.c

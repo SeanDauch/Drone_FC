@@ -39,7 +39,7 @@ void uart1_init(uint32_t baud_rate, uint32_t APB2_clk){
     // -------------- USART ----------------
     RCC -> APB2ENR |= RCC_APB2ENR_USART1EN;
 
-    USART1 -> CR1 |= USART_CR1_UE; // UART enable
+    USART1 -> CR1 |= USART_CR1_UE | USART_CR1_RE | USART_CR1_TE; // UART enable
     USART1 -> CR1 &= ~ USART_CR1_M; // 8 data bits
     USART1 -> CR2 &= ~ USART_CR2_STOP_Msk; // One stop bit
 
@@ -59,8 +59,6 @@ void uart1_init(uint32_t baud_rate, uint32_t APB2_clk){
 
 void uart1_transmit(uint8_t data[], uint64_t data_amount){
 
-    USART1 -> CR1 |= USART_CR1_TE;
-
     for(uint64_t i = 0; i<data_amount; i++){
 
         while(!(USART1->SR & USART_SR_TXE)){} // wait for transmitter to empty
@@ -72,8 +70,6 @@ void uart1_transmit(uint8_t data[], uint64_t data_amount){
 }
 
 void uart1_recieve(uint8_t data_storage[], uint64_t data_amount){
-
-    USART1 -> CR1 |= USART_CR1_RE;
 
     for(uint64_t i = 0; i<data_amount; i++){
 
@@ -182,7 +178,6 @@ void uart1_DMA_TX(uint8_t transmition_data[], uint16_t transmition_length){
     heartbeat++;
 
     _clear_USART1_SR();
-    USART1 -> CR1 |= USART_CR1_TE;
     _DMA2_enable(USART_TX_stream, transmition_data, transmition_length);
 }
 
@@ -193,7 +188,6 @@ void uart1_DMA_RX(uint8_t reception_buffer[], uint16_t buffer_length){
     while(DMA2_Stream5 -> CR & DMA_SxCR_EN){}
 
     _clear_USART1_SR();
-    USART1 -> CR1 |= USART_CR1_RE;
     _DMA2_enable(USART_RX_stream, reception_buffer, buffer_length);
 }
 

@@ -18,8 +18,8 @@ Making a custom flight controller for a 5-inch drone
 2. UART drivers
     - ~~Add DMA to UART~~
     - ~~CRSF decoder~~
-    - Implement double buffer mode for reciever
-    - add CRC
+    - ~~Implement double buffer mode for reciever~~
+    - ~~add CRC~~
 3. PID
 
 ### Things I Learned:
@@ -29,6 +29,7 @@ Making a custom flight controller for a 5-inch drone
 2. UART
     - Ive never used uart before so I learned how to set up drivers
     - I used the uart drivers to send data to my pc using the serial monitor
+    - Utalizing double buffer for continuous data was a fun challenge
 3. SWO
     - I learn about Serial wire output and made my own SWO drivers for debugging
     - I learned more about VSCode configs and how OpenOCD is structed
