@@ -28,6 +28,30 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/components.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/files.cmake)
 
+# ------------------------------ FreeRTOS --------------------------------------
+FILE(GLOB FreeRTOS_src third_party/FreeRTOS/*.c)
+
+# put all .c files for FreeRTOS into a library
+add_library(FreeRTOS STATIC
+  ${FreeRTOS_src}
+  third_party/FreeRTOS/portable/ARM_CM4F/port.c
+  third_party/FreeRTOS/portable/MemMang/heap_4.c
+)
+
+# put the .h files into the library
+target_include_directories(FreeRTOS PUBLIC
+  third_party/FreeRTOS/include
+  Inc
+  third_party/FreeRTOS/portable/ARM_CM4F
+)
+
+target_compile_options(FreeRTOS PRIVATE
+  -mcpu=cortex-m4
+  -mfloat-abi=hard
+  -mfpu=auto
+)
+# ------------------------------------------------------------------------------
+
 # Add sources to executable/library
 target_sources(${PROJECT_NAME} PRIVATE
   # User defined sources
@@ -85,4 +109,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   # Add additional linker libraries here
 
   m #<math.h>
+  FreeRTOS
 )

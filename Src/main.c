@@ -1,15 +1,12 @@
-#include "CRSF.h"
-#include "RC_receiver.h"
 #include "stm32f4xx.h"
 #include <stdint.h>
 #include <stdio.h>
 
-#include "uart.h"
-#include "debugging.h"
-#include "CRSF.h"
+#include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
+#include "task.h"
 
-#include "ESC.h"
-#include "delay.h"
+#include "debugging.h"
 
 #define SystemClock 16000000
 #define swo_baud 2000000
@@ -19,71 +16,60 @@ void enable_FPU(){
     SCB->CPACR |= 0xF<<20;
 }
 
+/*
+void vAssertCalled(void) {
+    taskDISABLE_INTERRUPTS();
+    for(;;);
+}
+
+void HardFault_Handler(void) {
+    __asm("BKPT #0");
+    while(1);
+}*/
+
+void gpio_pa11_pa12_init(void) {
+
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+    GPIOA->MODER &= ~(GPIO_MODER_MODE11_Msk | GPIO_MODER_MODE12_Msk); 
+    GPIOA->MODER |=  (1U << GPIO_MODER_MODE11_Pos) | (1U << GPIO_MODER_MODE12_Pos);                  
+}
+
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName){
+    taskDISABLE_INTERRUPTS();
+    while(1){}
+}
+
+void led_blink_11(){
+    while(1){
+        GPIOA->ODR ^= GPIO_ODR_OD11;
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
+
+void led_blink_12(){
+    while(1){
+        GPIOA->ODR ^= GPIO_ODR_OD12;
+
+        vTaskDelay(pdMS_TO_TICKS(333));
+    }
+}
 
 #define reciever_length rc_frame_len
 int main(){
 
-    swo_init(swo_baud, SystemClock);
-    RC_receiver_init(CRSF_baud, SystemClock);
-    printf("Initialization Complete\n");
-    delay_SysTick(1000, SystemClock);
+    enable_FPU();
+    gpio_pa11_pa12_init();
 
-    RC_controls my_controls = {0};
+    BaseType_t status1 = xTaskCreate(led_blink_11, "blink 11", 128, NULL, 1, NULL);
+    BaseType_t status2 = xTaskCreate(led_blink_12, "blink 12", 128, NULL, 2, NULL);
+    (void)status1;
+    (void)status2;
 
-    uint64_t bad_data_counter = 0;
+    vTaskStartScheduler();
 
-    while(1){
-        while(Receive_RC_controls(&my_controls) == bad_data){bad_data_counter++;}
-        print_RC_controls(&my_controls);
-        delay_SysTick(500, SystemClock);
-    }
-
-
-    // Debugging the double buffer in DMA
-    /*
-    CRSF_init(CRSF_baud, SystemClock);
-
-    uint8_t receive_buffer[reciever_length] = {0};
-
-    while (1){
-        while(receive_RC_CRSF_data(receive_buffer, reciever_length) == bad_data){}
-        RC_Data my_rc = unpack_rc_CRSF_data(&receive_buffer[data_start_pos], rc_data_len);
-
-        printf("CH_1: %d, CH_2: %d, CH_3: %d, CH_4: %d, CH_5: %d\n",
-            my_rc.channel_01,
-            my_rc.channel_02,
-            my_rc.channel_03,
-            my_rc.channel_04,
-            my_rc.channel_05);
-    }
-
-
-    swo_init(swo_baud, SystemClock);
-    uart1_DMA_init(CRSF_baud, SystemClock);
-    uint8_t receive_buffer[reciever_length] = {0};
-    uint64_t times_through = 0;
-
-    while(1){
-        uart1_DMA_RX(receive_buffer, reciever_length);
-        delay_SysTick(1000, SystemClock);
-
-        for(int i = 0; i<reciever_length; i++){
-            printf("0x%x ", receive_buffer[i]);
-        }
-        times_through++;
-    }
-
-
-    swo_init(swo_baud, SystemClock);
-    uart1_init(CRSF_baud, SystemClock);
-    uint8_t crsf_byte =0;
-    uint64_t times_through = 0;
-
-    while(1){
-        uart1_recieve(&crsf_byte, 1);
-        printf("0x%x ", crsf_byte);
-        times_through++;
-    }*/
-
+    while(1){}
     return 1;
 }
